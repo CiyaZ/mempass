@@ -1,0 +1,486 @@
+package com.ciyaz.mempass.controller;
+
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import com.ciyaz.mempass.WindowInitializr;
+import com.ciyaz.mempass.dao.AccountDao;
+import com.ciyaz.mempass.dao.CategoryDao;
+import com.ciyaz.mempass.dao.ExportDao;
+import com.ciyaz.mempass.model.domain.Account;
+import com.ciyaz.mempass.model.domain.Category;
+import com.ciyaz.mempass.model.vo.TableViewBean;
+import com.ciyaz.mempass.model.vo.TreeViewBean;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.stage.FileChooser;
+
+/**
+ * 主界面控制器
+ * 
+ * @author CiyaZ
+ */
+public class MainController {
+
+	@FXML
+	private MenuItem miNewCategory;
+	@FXML
+	private MenuItem miNewAccount;
+	@FXML
+	private MenuItem miUpdateCategory;
+	@FXML
+	private MenuItem miUpdateAccount;
+	@FXML
+	private MenuItem miDeleteCategory;
+	@FXML
+	private MenuItem miDeleteAccount;
+
+	@FXML
+	private Button btnNewCategory;
+	@FXML
+	private Button btnNewAccount;
+	@FXML
+	private Button btnDeleteCategory;
+	@FXML
+	private Button btnDeleteAccount;
+
+	@FXML
+	private TreeView<TreeViewBean> tvCategory;
+	@FXML
+	private TableView<TableViewBean> tvAccountInfo;
+	@FXML
+	private TableColumn<TableViewBean, String> tcAccountInfoKey;
+	@FXML
+	private TableColumn<TableViewBean, String> tcAccountInfoValue;
+	@FXML
+	private TextField tfSearch;
+
+	private static MainController self = null;
+
+	private CategoryDao categoryDao = CategoryDao.getInstance();
+	private AccountDao accountDao = AccountDao.getInstance();
+	private ExportDao exportDao = ExportDao.getInstance();
+
+	private WindowInitializr windowInitializr = WindowInitializr.getInstance();
+
+	/**
+	 * 单例模式获取控制器引用
+	 * 
+	 * @return MainController引用
+	 */
+	public static MainController getInstance() {
+		return MainController.self;
+	}
+
+	/**
+	 * 导出数据源
+	 */
+	public void handleExportDataSourceButton() {
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("H2 DB files (*.db)", "*.db");
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setInitialFileName("mempass.mv.db");
+		fileChooser.setTitle("保存数据库");
+		File targetFile = fileChooser.showSaveDialog(windowInitializr.STAGE_MAIN);
+		if (targetFile != null) {
+			exportDao.exportDb(targetFile);
+		}
+	}
+
+	/**
+	 * 导出Excel
+	 */
+	public void handleExportExcelButton() {
+		FileChooser fileChooser = new FileChooser();
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Microsoft Excel files (*.xlsx)",
+				"*.xlsx");
+		fileChooser.getExtensionFilters().add(extFilter);
+		fileChooser.setInitialFileName("password.xlsx");
+		fileChooser.setTitle("导出数据为Excel");
+		File targetFile = fileChooser.showSaveDialog(windowInitializr.STAGE_MAIN);
+		if (targetFile != null) {
+			exportDao.exportToExcel(targetFile);
+		}
+	}
+
+	/**
+	 * 退出程序
+	 */
+	public void handleExitProgramButton() {
+		Platform.exit();
+	}
+
+	/**
+	 * 退出登录
+	 */
+	public void handleExitLoginButton() {
+		windowInitializr.STAGE_MAIN.hide();
+		windowInitializr.STAGE_LOGIN.show();
+	}
+
+	/**
+	 * 改密码
+	 */
+	public void handleChangePasswordButton() {
+		try {
+			windowInitializr.initStageChangePasswordDialog();
+			windowInitializr.STAGE_CHANGE_PASSWORD_DIALOG.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 创建分类
+	 */
+	public void handleNewCategoryButton() {
+		try {
+			windowInitializr.initStageNewCategoryDialog();
+			NewCategoryDialogController.getInstance().setUpsertFlag(0);
+			NewCategoryDialogController.getInstance().setUpdateId(null);
+			windowInitializr.STAGE_NEW_CATEGORY_DIALOG.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 创建账户信息
+	 */
+	public void handleNewAccountButton() {
+		try {
+			windowInitializr.initStageNewAccountDialog();
+			NewAccountDialogController.getInstance().setUpsertFlag(0);
+			NewAccountDialogController.getInstance().setUpdateId(null);
+			windowInitializr.STAGE_NEW_ACCOUNT_DIALOG.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 更新分类
+	 */
+	public void handleUpdateCategoryButton() {
+		TreeItem<TreeViewBean> selectedItem = tvCategory.getSelectionModel().getSelectedItem();
+		if (selectedItem != null) {
+			TreeViewBean selectedBean = selectedItem.getValue();
+			if (selectedBean.getNodeType() == TreeViewBean.CATEGORY) {
+				long toUpdateCategoryId = selectedBean.getId();
+				try {
+					windowInitializr.initStageNewCategoryDialog();
+					NewCategoryDialogController.getInstance().setUpsertFlag(1);
+					NewCategoryDialogController.getInstance().setUpdateId(toUpdateCategoryId);
+					NewCategoryDialogController.getInstance().initUpdateData();
+					windowInitializr.STAGE_NEW_CATEGORY_DIALOG.show();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 更新账户信息
+	 */
+	public void handleUpdateAccountButton() {
+		TreeItem<TreeViewBean> selectedItem = tvCategory.getSelectionModel().getSelectedItem();
+		if (selectedItem != null) {
+			TreeViewBean selectedBean = selectedItem.getValue();
+			if (selectedBean.getNodeType() == TreeViewBean.ACCOUNT) {
+				long toUpdateAccountId = selectedBean.getId();
+				try {
+					windowInitializr.initStageNewAccountDialog();
+					NewAccountDialogController.getInstance().setUpsertFlag(1);
+					NewAccountDialogController.getInstance().setUpdateId(toUpdateAccountId);
+					NewAccountDialogController.getInstance().initUpdateData();
+					windowInitializr.STAGE_NEW_ACCOUNT_DIALOG.show();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 删除分类
+	 */
+	public void handleDeleteCategoryButton() {
+		TreeItem<TreeViewBean> selectedItem = tvCategory.getSelectionModel().getSelectedItem();
+		if (selectedItem != null) {
+			TreeViewBean selectedBean = selectedItem.getValue();
+			if (selectedBean.getNodeType() == TreeViewBean.CATEGORY) {
+				long toDeleteCategoryId = selectedBean.getId();
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("警告");
+				alert.setContentText("你真的要删除该分类吗？级联账户信息会被移动至默认分类下。");
+				alert.showAndWait();
+				if (alert.getResult() == ButtonType.OK) {
+					categoryDao.deleteCategoryById(toDeleteCategoryId);
+					reloadTreeView();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 删除账户信息
+	 */
+	public void handleDeleteAccountButton() {
+		TreeItem<TreeViewBean> selectedItem = tvCategory.getSelectionModel().getSelectedItem();
+		if (selectedItem != null) {
+			TreeViewBean selectedBean = selectedItem.getValue();
+			if (selectedBean.getNodeType() == TreeViewBean.ACCOUNT) {
+				long toDeleteAccountId = selectedBean.getId();
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setTitle("警告");
+				alert.setContentText("你真的要彻底删除该账户信息吗？");
+				alert.showAndWait();
+				if (alert.getResult() == ButtonType.OK) {
+					accountDao.deleteAccountById(toDeleteAccountId);
+					reloadTreeView();
+					clearTable();
+				}
+			}
+		}
+	}
+
+	/**
+	 * 随机密码窗口
+	 */
+	public void handleRandPasswordDialogButton() {
+		try {
+			windowInitializr.initStageRandomPasswordDialog();
+			windowInitializr.STAGE_RANDOM_PASSWORD_DIALOG.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 关于窗口
+	 */
+	public void handleAboutDialogButton() {
+		try {
+			windowInitializr.initStageAboutDialog();
+			windowInitializr.STAGE_ABOUT_DIALOG.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 文档
+	 */
+	public void handleShowDocumentButton() {
+		if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+			try {
+				Desktop.getDesktop().browse(new URI("https://github.com/CiyaZ/mempass"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * 搜索功能
+	 */
+	public void handleSearchButton() {
+		String pattern = tfSearch.getText();
+		reloadTreeView(pattern);
+	}
+
+	/**
+	 * 清空搜索条件并刷新
+	 */
+	public void handleClearSearchButton() {
+		tfSearch.setText("");
+		reloadTreeView(null);
+	}
+
+	@FXML
+	public void initialize() {
+		// 注册外部调用接口
+		MainController.self = this;
+		// 设置树形菜单CellFactory
+		tvCategory.setCellFactory(param -> new TreeCell<>() {
+			@Override
+			protected void updateItem(TreeViewBean item, boolean empty) {
+				super.updateItem(item, empty);
+				setText(item == null ? "" : item.getValue());
+			}
+		});
+		// 设置树形菜单监听器
+		tvCategory.getSelectionModel().selectedItemProperty()
+				.addListener((ChangeListener<TreeItem<TreeViewBean>>) (observable, oldValue, newValue) -> {
+					if (newValue != null) {
+						TreeViewBean selectedBean = newValue.getValue();
+						if (selectedBean.getNodeType() == TreeViewBean.ACCOUNT) {
+							// 选择的是Account节点
+							loadTable((Account) selectedBean.getObj());
+							// 更新工具栏按钮和菜单按钮状态
+							miUpdateCategory.setDisable(true);
+							miUpdateAccount.setDisable(false);
+							miDeleteCategory.setDisable(true);
+							miDeleteAccount.setDisable(false);
+							btnDeleteCategory.setDisable(true);
+							btnDeleteAccount.setDisable(false);
+						} else if (selectedBean.getNodeType() == TreeViewBean.CATEGORY) {
+							// 选择的是Category节点
+							clearTable();
+							// 更新工具栏按钮和菜单按钮状态
+							miUpdateCategory.setDisable(false);
+							miUpdateAccount.setDisable(true);
+							miDeleteCategory.setDisable(false);
+							miDeleteAccount.setDisable(true);
+							btnDeleteCategory.setDisable(false);
+							btnDeleteAccount.setDisable(true);
+						} else {
+							// 选择的是ROOT节点
+							clearTable();
+							// 更新工具栏按钮和菜单按钮状态
+							miUpdateCategory.setDisable(false);
+							miUpdateAccount.setDisable(false);
+							miDeleteCategory.setDisable(false);
+							miDeleteAccount.setDisable(false);
+							btnDeleteCategory.setDisable(false);
+							btnDeleteAccount.setDisable(false);
+						}
+					}
+				});
+		// 刷新树形菜单
+		reloadTreeView();
+		// 设置表格数据存储和展示逻辑
+		tcAccountInfoKey.setCellFactory(TextFieldTableCell.<TableViewBean>forTableColumn());
+		tcAccountInfoValue.setCellFactory(TextFieldTableCell.<TableViewBean>forTableColumn());
+	}
+
+	/**
+	 * 基于数据库重新加载左侧树形菜单
+	 */
+	public void reloadTreeView() {
+		reloadTreeView(null);
+	}
+
+	/**
+	 * 基于数据库重新加载左侧树形菜单，带搜索功能
+	 * 
+	 * @param searchPattern 搜索匹配字符串
+	 */
+	public void reloadTreeView(String searchPattern) {
+		TreeItem<TreeViewBean> rootNode = new TreeItem<>(
+				TreeViewBean.builder().id(null).value("账号目录").nodeType(TreeViewBean.ROOT).obj(null).build());
+		rootNode.setExpanded(true);
+		List<Category> categoryList = categoryDao.queryAllCategories();
+		for (Category category : categoryList) {
+			TreeItem<TreeViewBean> categoryNode = new TreeItem<>(TreeViewBean.builder().id(category.getCateoryId())
+					.value(category.getCategoryName()).nodeType(TreeViewBean.CATEGORY).obj(category).build());
+			categoryNode.setExpanded(true);
+			rootNode.getChildren().add(categoryNode);
+			List<Account> accountList = accountDao.queryAccountsByCategoryId(category.getCateoryId());
+			if (searchPattern != null && !"".equals(searchPattern)) {
+				// 在应用层根据匹配字符串过滤
+				Iterator<Account> it = accountList.iterator();
+				while (it.hasNext()) {
+					if (!it.next().getItemName().contains(searchPattern)) {
+						it.remove();
+					}
+				}
+			}
+			for (Account account : accountList) {
+				TreeItem<TreeViewBean> accountNode = new TreeItem<>(TreeViewBean.builder().id(account.getAccountId())
+						.value(account.getItemName()).nodeType(TreeViewBean.ACCOUNT).obj(account).build());
+				categoryNode.getChildren().add(accountNode);
+			}
+		}
+		tvCategory.setRoot(rootNode);
+	}
+
+	/**
+	 * 清空信息表格
+	 */
+	public void clearTable() {
+		ObservableList<TableViewBean> list = FXCollections.observableArrayList();
+		tvAccountInfo.setItems(list);
+	}
+
+	/**
+	 * 基于数据库重新加载账号信息表格
+	 */
+	public void reloadTable(Long accountId) {
+		Account account = accountDao.queryAccountById(accountId);
+		if (account != null) {
+			loadTable(account);
+		}
+	}
+
+	/**
+	 * 基于对象加载账号信息表格
+	 * 
+	 * @param account 账户信息对象
+	 */
+	public void loadTable(Account account) {
+		TableViewBean tvb1 = TableViewBean.builder().key("账户项").value(account.getItemName()).build();
+		TableViewBean tvb2 = TableViewBean.builder().key("账户名").value(account.getUsername()).build();
+		TableViewBean tvb3 = TableViewBean.builder().key("密码").value(account.getPassword()).build();
+		TableViewBean tvb4 = TableViewBean.builder().key("描述").value(account.getDescription()).build();
+		TableViewBean tvb5 = TableViewBean.builder().key("备注").value(account.getNote()).build();
+		Date createTime = account.getCreateTime();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String createTimeStr = sdf.format(createTime);
+		TableViewBean tvb6 = TableViewBean.builder().key("创建时间").value(createTimeStr).build();
+		Date lastModifiedTime = account.getLastModifiedTime();
+		String lastModifiedTimeStr = sdf.format(lastModifiedTime);
+		TableViewBean tvb7 = TableViewBean.builder().key("最后修改时间").value(lastModifiedTimeStr).build();
+		int availableStatus = account.getAvailableStatus();
+		String availableStatusStr = "正常";
+		switch (availableStatus) {
+		case 1:
+			availableStatusStr = "正常";
+			break;
+		case 2:
+			availableStatusStr = "不可用";
+			break;
+		case 3:
+			availableStatusStr = "废弃";
+			break;
+		case 4:
+			availableStatusStr = "已注销";
+			break;
+		default:
+			break;
+		}
+		TableViewBean tvb8 = TableViewBean.builder().key("可用状态").value(availableStatusStr).build();
+		ObservableList<TableViewBean> list = FXCollections.observableArrayList();
+		list.add(tvb1);
+		list.add(tvb2);
+		list.add(tvb3);
+		list.add(tvb4);
+		list.add(tvb5);
+		list.add(tvb6);
+		list.add(tvb7);
+		list.add(tvb8);
+		tvAccountInfo.setItems(list);
+	}
+}
