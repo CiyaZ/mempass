@@ -8,7 +8,7 @@ create table if not exists t_category (
 	category_id bigint primary key auto_increment,
 	category_name varchar(255) not null
 );
-insert into t_category (category_name) values ('默认分类');
+insert into t_category (category_name) values ('default');
 create table if not exists t_account (
 	account_id bigint primary key auto_increment,
 	item_name varchar(255) not null,
