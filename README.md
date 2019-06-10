@@ -25,4 +25,4 @@ mvn clean package
 java -jar mempass-0.0.1-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-数据文件存储在用户目录下`.mempass`文件夹，本地存储基于H2数据库，可以到处为Excel。
+数据文件存储在用户目录下`.mempass`文件夹，本地存储基于H2数据库，可以导出为Excel。
