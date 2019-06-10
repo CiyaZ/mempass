@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -231,14 +232,22 @@ public class MainController {
 		if (selectedItem != null) {
 			TreeViewBean selectedBean = selectedItem.getValue();
 			if (selectedBean.getNodeType() == TreeViewBean.CATEGORY) {
-				long toDeleteCategoryId = selectedBean.getId();
-				Alert alert = new Alert(AlertType.CONFIRMATION);
-				alert.setTitle("警告");
-				alert.setContentText("你真的要删除该分类吗？级联账户信息会被移动至默认分类下。");
-				alert.showAndWait();
-				if (alert.getResult() == ButtonType.OK) {
-					categoryDao.deleteCategoryById(toDeleteCategoryId);
-					reloadTreeView();
+				if (selectedBean.getId() == 1L) {
+					Alert alert = new Alert(AlertType.WARNING);
+					alert.setTitle("警告");
+					alert.setContentText("不允许删除默认分类！");
+					alert.show();
+					return;
+				} else {
+					long toDeleteCategoryId = selectedBean.getId();
+					Alert alert = new Alert(AlertType.CONFIRMATION);
+					alert.setTitle("警告");
+					alert.setContentText("你真的要删除该分类吗？级联账户信息会被移动至默认分类下。");
+					alert.showAndWait();
+					if (alert.getResult() == ButtonType.OK) {
+						categoryDao.deleteCategoryById(toDeleteCategoryId);
+						reloadTreeView();
+					}
 				}
 			}
 		}
@@ -319,18 +328,48 @@ public class MainController {
 		reloadTreeView(null);
 	}
 
+	/**
+	 * 树形菜单定制cell
+	 */
+	class CategoryTreeCell extends TreeCell<TreeViewBean> {
+		@Override
+		protected void updateItem(TreeViewBean item, boolean empty) {
+			// 设置TreeCell文字内容
+			super.updateItem(item, empty);
+			setText(item == null ? "" : item.getValue());
+			// 设置右键菜单
+			ContextMenu contextMenu = new ContextMenu();
+			if (item != null && item.getNodeType() == TreeViewBean.CATEGORY) {
+				MenuItem mi1 = new MenuItem("新建类别");
+				mi1.setOnAction(event -> handleNewCategoryButton());
+				MenuItem mi2 = new MenuItem("修改类别");
+				mi2.setOnAction(event -> handleUpdateCategoryButton());
+				MenuItem mi3 = new MenuItem("删除类别");
+				mi3.setOnAction(event -> handleDeleteCategoryButton());
+				contextMenu.getItems().add(mi1);
+				contextMenu.getItems().add(mi2);
+				contextMenu.getItems().add(mi3);
+			} else if (item != null && item.getNodeType() == TreeViewBean.ACCOUNT) {
+				MenuItem mi1 = new MenuItem("新建账户");
+				mi1.setOnAction(event -> handleNewAccountButton());
+				MenuItem mi2 = new MenuItem("修改账户");
+				mi2.setOnAction(event -> handleUpdateAccountButton());
+				MenuItem mi3 = new MenuItem("删除账户");
+				mi3.setOnAction(event -> handleDeleteAccountButton());
+				contextMenu.getItems().add(mi1);
+				contextMenu.getItems().add(mi2);
+				contextMenu.getItems().add(mi3);
+			}
+			this.setContextMenu(contextMenu);
+		}
+	}
+
 	@FXML
 	public void initialize() {
 		// 注册外部调用接口
 		MainController.self = this;
 		// 设置树形菜单CellFactory
-		tvCategory.setCellFactory(param -> new TreeCell<>() {
-			@Override
-			protected void updateItem(TreeViewBean item, boolean empty) {
-				super.updateItem(item, empty);
-				setText(item == null ? "" : item.getValue());
-			}
-		});
+		tvCategory.setCellFactory(param -> new CategoryTreeCell());
 		// 设置树形菜单监听器
 		tvCategory.getSelectionModel().selectedItemProperty()
 				.addListener((ChangeListener<TreeItem<TreeViewBean>>) (observable, oldValue, newValue) -> {
