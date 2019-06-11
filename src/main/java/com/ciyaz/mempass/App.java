@@ -1,6 +1,7 @@
 package com.ciyaz.mempass;
 
 import com.ciyaz.mempass.dao.SchemaInitDao;
+import com.ciyaz.mempass.util.PropertiesUtil;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -18,6 +19,9 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
+		// 运行时配置初始化
+		PropertiesUtil.loadProperties();
 
 		// 初始化起始窗口
 		windowInitializr.initStageLogin(primaryStage);

@@ -3,6 +3,7 @@ package com.ciyaz.mempass.controller;
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AuthDao;
 import com.ciyaz.mempass.util.Config;
+import com.ciyaz.mempass.util.PropertiesUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -20,6 +21,13 @@ public class LoginController {
 	private WindowInitializr windowInitializr = WindowInitializr.getInstance();
 	private AuthDao authDao = AuthDao.getInstance();
 
+	@FXML
+	public void initialize() {
+		if (Config.LAST_AUTH_ID != null) {
+			tfAuthId.setText(Config.LAST_AUTH_ID);
+		}
+	}
+
 	public void handleLoginButton() {
 		String authId = tfAuthId.getText();
 		String authKey = pfAuthKey.getText();
@@ -35,11 +43,14 @@ public class LoginController {
 
 		Config.AUTH_ID = authId;
 		Config.AUTH_KEY = authKey;
+		Config.LAST_AUTH_ID = authId;
 		boolean checked = authDao.checkAuthInfo(authId, authKey);
 		if (checked) {
 			// 登陆成功
 			windowInitializr.STAGE_LOGIN.hide();
+
 			try {
+				PropertiesUtil.saveProperties();
 				windowInitializr.initStageMain();
 				windowInitializr.STAGE_MAIN.show();
 			} catch (Exception e) {
