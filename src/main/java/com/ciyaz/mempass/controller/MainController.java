@@ -337,6 +337,8 @@ public class MainController {
 			// 设置TreeCell文字内容
 			super.updateItem(item, empty);
 			setText(item == null ? "" : item.getValue());
+			// 设置节点文字颜色，为了避免TreeCell实例自动复用引起bug，设置颜色前重置为黑色
+			setStyle("-fx-text-fill: #000000;");
 			if (item != null && item.getNodeType() == TreeViewBean.ACCOUNT) {
 				Account account = (Account) item.getObj();
 				switch (account.getAvailableStatus()) {
