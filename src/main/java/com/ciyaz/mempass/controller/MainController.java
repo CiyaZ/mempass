@@ -337,6 +337,25 @@ public class MainController {
 			// 设置TreeCell文字内容
 			super.updateItem(item, empty);
 			setText(item == null ? "" : item.getValue());
+			if (item != null && item.getNodeType() == TreeViewBean.ACCOUNT) {
+				Account account = (Account) item.getObj();
+				switch (account.getAvailableStatus()) {
+				case Account.AVAILABLE:
+					setStyle("-fx-text-fill: #000000;");
+					break;
+				case Account.UNAVAILABLE:
+					setStyle("-fx-text-fill: #F0AD4E;");
+					break;
+				case Account.DEPRECATED:
+					setStyle("-fx-text-fill: #CBCBCB;");
+					break;
+				case Account.CANCELLED:
+					setStyle("-fx-text-fill: #FF0000;");
+					break;
+				default:
+					break;
+				}
+			}
 			// 设置右键菜单
 			ContextMenu contextMenu = new ContextMenu();
 			if (item != null && item.getNodeType() == TreeViewBean.CATEGORY) {
@@ -495,16 +514,16 @@ public class MainController {
 		int availableStatus = account.getAvailableStatus();
 		String availableStatusStr = "正常";
 		switch (availableStatus) {
-		case 1:
+		case Account.AVAILABLE:
 			availableStatusStr = "正常";
 			break;
-		case 2:
+		case Account.UNAVAILABLE:
 			availableStatusStr = "不可用";
 			break;
-		case 3:
+		case Account.DEPRECATED:
 			availableStatusStr = "废弃";
 			break;
-		case 4:
+		case Account.CANCELLED:
 			availableStatusStr = "已注销";
 			break;
 		default:

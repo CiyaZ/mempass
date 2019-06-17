@@ -81,10 +81,10 @@ public class NewAccountDialogController {
 		cbAvailableStatus.getItems().add("不可用");
 		cbAvailableStatus.getItems().add("废弃");
 		cbAvailableStatus.getItems().add("已注销");
-		cbAvailableStatusList.add(1);
-		cbAvailableStatusList.add(2);
-		cbAvailableStatusList.add(3);
-		cbAvailableStatusList.add(4);
+		cbAvailableStatusList.add(Account.AVAILABLE);
+		cbAvailableStatusList.add(Account.UNAVAILABLE);
+		cbAvailableStatusList.add(Account.DEPRECATED);
+		cbAvailableStatusList.add(Account.CANCELLED);
 		cbAvailableStatus.getSelectionModel().selectFirst();
 	}
 
