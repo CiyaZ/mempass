@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AccountDao;
 import com.ciyaz.mempass.dao.CategoryDao;
@@ -488,7 +490,7 @@ public class MainController {
 				// 在应用层根据匹配字符串过滤
 				Iterator<Account> it = accountList.iterator();
 				while (it.hasNext()) {
-					if (!it.next().getItemName().contains(searchPattern)) {
+					if (!StringUtils.containsIgnoreCase(it.next().getItemName(), searchPattern)) {
 						it.remove();
 					}
 				}
