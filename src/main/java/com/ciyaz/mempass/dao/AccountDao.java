@@ -48,7 +48,7 @@ public class AccountDao {
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				account = Account.builder().accountId(rs.getLong("account_id")).itemName(rs.getString("item_name"))
-						.username("user_name")
+						.username(rs.getString("user_name"))
 						.password(EncUtil.pbeDecryptStr(rs.getString("password"), Config.AUTH_KEY))
 						.description(rs.getString("description")).note(rs.getString("note"))
 						.createTime(new Date(rs.getTimestamp("create_time").getTime()))
