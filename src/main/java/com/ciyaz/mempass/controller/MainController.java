@@ -447,15 +447,40 @@ public class MainController {
 	 * @param searchPattern 搜索匹配字符串
 	 */
 	public void reloadTreeView(String searchPattern) {
+
+		// 旧的树结构，用来遍历获取节点的expanded状态
+		TreeItem<TreeViewBean> oldRootNode = tvCategory.getRoot();
+
+		// 组装新的根节点
 		TreeItem<TreeViewBean> rootNode = new TreeItem<>(
 				TreeViewBean.builder().id(null).value("账号目录").nodeType(TreeViewBean.ROOT).obj(null).build());
-		rootNode.setExpanded(true);
+
+		// 设置根节点expanded状态
+		if (oldRootNode != null) {
+			rootNode.setExpanded(oldRootNode.isExpanded());
+		} else {
+			rootNode.setExpanded(true);
+		}
+
+		// 分类组装
 		List<Category> categoryList = categoryDao.queryAllCategories();
 		for (Category category : categoryList) {
 			TreeItem<TreeViewBean> categoryNode = new TreeItem<>(TreeViewBean.builder().id(category.getCateoryId())
 					.value(category.getCategoryName()).nodeType(TreeViewBean.CATEGORY).obj(category).build());
-			categoryNode.setExpanded(true);
+
+			// 设置分类expanded状态
+			if (oldRootNode != null) {
+				for (TreeItem<TreeViewBean> oldCategoryItemNode : oldRootNode.getChildren()) {
+					if (oldCategoryItemNode.getValue().getId().equals(category.getCateoryId())) {
+						categoryNode.setExpanded(oldCategoryItemNode.isExpanded());
+						break;
+					}
+				}
+			}
+
 			rootNode.getChildren().add(categoryNode);
+
+			// 类账户列表组装
 			List<Account> accountList = accountDao.queryAccountsByCategoryId(category.getCateoryId());
 			if (searchPattern != null && !"".equals(searchPattern)) {
 				// 在应用层根据匹配字符串过滤
