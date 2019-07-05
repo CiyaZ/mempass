@@ -7,6 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.h2.jdbc.JdbcSQLNonTransientConnectionException;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+
 public class DbUtil {
 	static {
 		try {
@@ -28,8 +33,20 @@ public class DbUtil {
 			String user = "sa";
 			String password = "";
 			conn = DriverManager.getConnection(url, user, password);
-		} catch (SQLException e) {
+		} catch (JdbcSQLNonTransientConnectionException e) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("警告");
+			alert.setContentText("你只能加载一个程序实例！");
+			alert.show();
 			e.printStackTrace();
+			throw new RuntimeException("H2数据库文件已锁定");
+		} catch (SQLException e) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("警告");
+			alert.setContentText("打开数据库连接出错！");
+			alert.show();
+			e.printStackTrace();
+			throw new RuntimeException("获取数据库连接失败");
 		}
 		return conn;
 	}
