@@ -92,7 +92,7 @@
 					<top>
 						<HBox alignment="CENTER" prefHeight="23.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<children>
-								<TextField fx:id="tfSearch" alignment="CENTER" prefHeight="23.0" prefWidth="108.0" />
+								<TextField fx:id="tfSearch" alignment="CENTER" prefHeight="23.0" prefWidth="108.0" onAction="#handleSearchButton" />
 								<Button mnemonicParsing="false" onAction="#handleClearSearchButton" text="清空">
 									<HBox.margin>
 										<Insets left="3.0" />
