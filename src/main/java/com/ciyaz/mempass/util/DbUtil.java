@@ -36,7 +36,7 @@ public class DbUtil {
 		} catch (JdbcSQLNonTransientConnectionException e) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("警告");
-			alert.setContentText("你只能加载一个程序实例！");
+			alert.setContentText("数据库占用中，同一数据库只能加载一个程序实例！");
 			alert.show();
 			e.printStackTrace();
 			throw new RuntimeException("H2数据库文件已锁定");
