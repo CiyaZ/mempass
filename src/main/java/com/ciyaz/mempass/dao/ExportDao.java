@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
+import com.ciyaz.mempass.util.FileUtils;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -42,12 +42,9 @@ public class ExportDao {
 	 * @param file 目标文件
 	 */
 	public void exportDb(File file) {
-		try {
-			String srcPath = Config.WORK_DIR + "/data/" + Config.AUTH_ID + "/mempass.mv.db";
-			FileUtils.copyFile(new File(srcPath), file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		String srcPath = Config.WORK_DIR + "/data/" + Config.AUTH_ID + "/mempass.mv.db";
+		File srcFile = new File(srcPath);
+		FileUtils.copyFile(srcFile, file);
 	}
 
 	/**
