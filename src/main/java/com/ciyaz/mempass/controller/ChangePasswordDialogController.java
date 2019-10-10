@@ -38,14 +38,14 @@ public class ChangePasswordDialogController {
 		if ("".equals(oldPassword) || "".equals(password) || "".equals(rePassword)) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("警告");
-			alert.setContentText("原密码错误！");
+			alert.setContentText("字段值不能为空！");
 			alert.show();
 			return;
 		}
 		if (!oldPassword.equals(Config.AUTH_KEY)) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("警告");
-			alert.setContentText("字段值不能为空！");
+			alert.setContentText("原密码错误！");
 			alert.show();
 			return;
 		}
@@ -53,6 +53,13 @@ public class ChangePasswordDialogController {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("警告");
 			alert.setContentText("两次新密码输入不同！");
+			alert.show();
+			return;
+		}
+		if (oldPassword.equals(password)) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("警告");
+			alert.setContentText("原密码和新密码不能相同！");
 			alert.show();
 			return;
 		}

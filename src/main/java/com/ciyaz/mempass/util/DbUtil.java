@@ -37,12 +37,25 @@ public class DbUtil {
 			String password = Config.AUTH_KEY + " ";
 			conn = DriverManager.getConnection(url, user, password);
 		} catch (JdbcSQLNonTransientConnectionException e) {
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("警告");
-			alert.setContentText("数据库占用中，同一数据库只能加载一个程序实例！");
-			alert.show();
-			e.printStackTrace();
-			throw new RuntimeException("H2数据库文件已锁定");
+			// 这里H2本身抛出的异常类型似乎有点bug
+			// 解密异常可能是JdbcSQLNonTransientConnectionExceptio
+			// 也可能是JdbcSQLInvalidAuthorizationSpecException
+			// 所以额外判断了一下
+			if (e.getMessage().startsWith("Encryption error")) {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("警告");
+				alert.setContentText("数据库文件解密认证失败！该行为会报告给管理员！");
+				alert.show();
+				e.printStackTrace();
+				throw new RuntimeException("数据库文件解密认证失败");
+			} else {
+				Alert alert = new Alert(AlertType.WARNING);
+				alert.setTitle("警告");
+				alert.setContentText("数据库占用中，同一数据库只能加载一个程序实例！");
+				alert.show();
+				e.printStackTrace();
+				throw new RuntimeException("H2数据库文件已锁定");
+			}
 		} catch (JdbcSQLInvalidAuthorizationSpecException e) {
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("警告");
