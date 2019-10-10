@@ -21,7 +21,8 @@ public class App extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		// 运行时配置初始化
-		PropertiesUtil.loadProperties();
+		PropertiesUtil.loadRuntimeProperties();
+		PropertiesUtil.loadAppProperties();
 
 		// 初始化起始窗口
 		windowInitializr.initStageLogin(primaryStage);

@@ -18,4 +18,18 @@ public class StringUtils {
 		String patternLc = pattern.toLowerCase();
 		return srcStrLc.contains(patternLc);
 	}
+
+	/**
+	 * 判断字符串变量是否是空串或null
+	 * 
+	 * @param str 字符串
+	 * @return 判断结果，空返回true
+	 */
+	public static boolean isEmpty(String str) {
+		if (str == null || "".equals(str)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

@@ -15,9 +15,9 @@ import java.util.Properties;
  */
 public class PropertiesUtil {
 	/**
-	 * 配置加载
+	 * 运行时配置加载
 	 */
-	public static void loadProperties() throws IOException {
+	public static void loadRuntimeProperties() throws IOException {
 		File file = new File(Config.WORK_DIR + "/config.properties");
 		if (file.exists()) {
 			InputStream in = new FileInputStream(file);
@@ -33,9 +33,23 @@ public class PropertiesUtil {
 	}
 
 	/**
-	 * 保存配置
+	 * 抽离的应用配置加载
 	 */
-	public static void saveProperties() throws IOException {
+	public static void loadAppProperties() throws IOException {
+		InputStream in = PropertiesUtil.class.getClassLoader().getResourceAsStream("conf/app.properties");
+		Properties props = new Properties();
+		props.load(in);
+		String h2Trace = (String) props.get("H2_TRACE");
+		if (!StringUtils.isEmpty(h2Trace)) {
+			Config.H2_TRACE = h2Trace;
+		}
+		in.close();
+	}
+
+	/**
+	 * 运行时配置保存
+	 */
+	public static void saveRuntimeProperties() throws IOException {
 		// 如果存在加载配置文件，不存在新建
 		File file = new File(Config.WORK_DIR + "/config.properties");
 		Properties props = null;

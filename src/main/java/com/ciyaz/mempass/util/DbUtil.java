@@ -29,7 +29,7 @@ public class DbUtil {
 	public static Connection getConnection() {
 		Connection conn = null;
 		try {
-			String url = "jdbc:h2:" + Config.WORK_DIR + "/data/" + Config.AUTH_ID + "/mempass";
+			String url = "jdbc:h2:" + Config.WORK_DIR + "/data/" + Config.AUTH_ID + "/mempass;TRACE_LEVEL_FILE=" + Config.H2_TRACE + ";TRACE_LEVEL_SYSTEM_OUT=" + Config.H2_TRACE;
 			String user = "sa";
 			String password = "";
 			conn = DriverManager.getConnection(url, user, password);

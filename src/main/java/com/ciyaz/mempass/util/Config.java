@@ -27,6 +27,11 @@ public class Config {
 	 */
 	public static String LAST_AUTH_ID = null;
 
+	/**
+	 * H2数据库的Trace级别，默认关闭
+	 */
+	public static String H2_TRACE = "0";
+	
 	static {
 		// 检查/home/<user>/.mempass文件夹不存在则创建
 		String userDir = System.getProperty("user.home");

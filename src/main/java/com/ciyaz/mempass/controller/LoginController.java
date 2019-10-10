@@ -50,7 +50,7 @@ public class LoginController {
 			windowInitializr.STAGE_LOGIN.hide();
 
 			try {
-				PropertiesUtil.saveProperties();
+				PropertiesUtil.saveRuntimeProperties();
 				windowInitializr.initStageMain();
 				windowInitializr.STAGE_MAIN.show();
 			} catch (Exception e) {
