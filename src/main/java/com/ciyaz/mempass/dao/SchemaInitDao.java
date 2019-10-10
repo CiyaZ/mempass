@@ -47,6 +47,7 @@ public class SchemaInitDao {
 	public void initSchema() {
 		// 获取连接
 		Connection conn = DbUtil.getConnection();
+		Statement stmt = null;
 		// 加载SQL
 		InputStream is = SchemaInitDao.class.getClassLoader().getResourceAsStream("conf/db.sql");
 		InputStreamReader isr = new InputStreamReader(is);
@@ -64,15 +65,16 @@ public class SchemaInitDao {
 			}
 			// 插入数据库
 			conn.setAutoCommit(false);
-			Statement stmt = conn.createStatement();
+			stmt = conn.createStatement();
 			for (String sql : sqls) {
 				stmt.addBatch(sql);
 			}
 			stmt.executeBatch();
 			conn.commit();
-			DbUtil.closeResource(conn, stmt);
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, stmt);
 		}
 	}
 
@@ -82,12 +84,14 @@ public class SchemaInitDao {
 	public void completeInitData() {
 		Connection conn = DbUtil.getConnection();
 		String sql = "update t_conf set conf_value='0' where conf_key='fresh'";
+		PreparedStatement pstmt = null;
 		try {
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt = conn.prepareStatement(sql);
 			pstmt.execute();
-			DbUtil.closeResource(conn, pstmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
 
 	}

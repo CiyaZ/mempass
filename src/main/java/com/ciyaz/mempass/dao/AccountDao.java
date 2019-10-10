@@ -57,8 +57,9 @@ public class AccountDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt, rs);
 		}
-		DbUtil.closeResource(conn, pstmt, rs);
 		return account;
 	}
 
@@ -89,8 +90,9 @@ public class AccountDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt, rs);
 		}
-		DbUtil.closeResource(conn, pstmt, rs);
 		return resultList;
 	}
 
@@ -124,8 +126,9 @@ public class AccountDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt, rs);
 		}
-		DbUtil.closeResource(conn, pstmt, rs);
 		return resultList;
 	}
 
@@ -152,8 +155,9 @@ public class AccountDao {
 			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
-		DbUtil.closeResource(conn, pstmt);
 	}
 
 	/**
@@ -181,8 +185,9 @@ public class AccountDao {
 			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
-		DbUtil.closeResource(conn, pstmt);
 	}
 
 	/**
@@ -200,8 +205,9 @@ public class AccountDao {
 			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
-		DbUtil.closeResource(conn, pstmt);
 	}
 
 	/**
@@ -229,6 +235,8 @@ public class AccountDao {
 			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
 	}
 }

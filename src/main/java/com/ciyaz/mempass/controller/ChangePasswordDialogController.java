@@ -4,6 +4,7 @@ import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AccountDao;
 import com.ciyaz.mempass.dao.AuthDao;
 import com.ciyaz.mempass.util.Config;
+import com.ciyaz.mempass.util.DbUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -58,6 +59,7 @@ public class ChangePasswordDialogController {
 		// 修改密码
 		authDao.changePassword(password);
 		accountDao.updateEncKey(oldPassword, password);
+		DbUtil.changeFileEncPassword(password);
 		Config.AUTH_KEY = password;
 
 		windowInitializr.STAGE_CHANGE_PASSWORD_DIALOG.hide();

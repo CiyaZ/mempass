@@ -34,20 +34,22 @@ public class AuthDao {
 	 */
 	public void initAuthInfo(String authId, String authKey) {
 		Connection conn = DbUtil.getConnection();
+		PreparedStatement pstmt1 = null;
+		PreparedStatement pstmt2 = null;
 		String sql1 = "insert into t_conf (conf_key, conf_value) values ('auth_id', ?);";
 		String sql2 = "insert into t_conf (conf_key, conf_value) values ('auth_key', ?);";
 		try {
-			PreparedStatement pstmt1 = conn.prepareStatement(sql1);
+			pstmt1 = conn.prepareStatement(sql1);
 			pstmt1.setString(1, authId);
 			pstmt1.execute();
-			pstmt1.close();
-			PreparedStatement pstmt2 = conn.prepareStatement(sql2);
+			pstmt2 = conn.prepareStatement(sql2);
 			pstmt2.setString(1, EncUtil.sha256Hex(authKey));
 			pstmt2.execute();
-			pstmt2.close();
-			DbUtil.closeResource(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(null, pstmt1);
+			DbUtil.closeResource(conn, pstmt2);
 		}
 	}
 
@@ -69,24 +71,24 @@ public class AuthDao {
 
 		// 检查认证ID和秘钥是否匹配
 		Connection conn = DbUtil.getConnection();
+		PreparedStatement pstmt1 = null;
+		PreparedStatement pstmt2 = null;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
 		// 认证ID
 		String sql1 = "select conf_value from t_conf where conf_key='auth_id'";
 		// 认证秘钥
 		String sql2 = "select conf_value from t_conf where conf_key='auth_key'";
 		try {
-			PreparedStatement pstmt1 = conn.prepareStatement(sql1);
-			ResultSet rs1 = pstmt1.executeQuery();
+			pstmt1 = conn.prepareStatement(sql1);
+			rs1 = pstmt1.executeQuery();
 			rs1.next();
 			String realAuthId = rs1.getString("conf_value");
-			rs1.close();
-			pstmt1.close();
 
-			PreparedStatement pstmt2 = conn.prepareStatement(sql2);
-			ResultSet rs2 = pstmt2.executeQuery();
+			pstmt2 = conn.prepareStatement(sql2);
+			rs2 = pstmt2.executeQuery();
 			rs2.next();
 			String realAuthKey = rs2.getString("conf_value");
-			rs2.close();
-			pstmt2.close();
 
 			DbUtil.closeResource(conn);
 
@@ -100,6 +102,9 @@ public class AuthDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			DbUtil.closeResource(null, pstmt1, rs1);
+			DbUtil.closeResource(conn, pstmt2, rs2);
 		}
 	}
 
@@ -118,7 +123,8 @@ public class AuthDao {
 			pstmt.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			DbUtil.closeResource(conn, pstmt);
 		}
-		DbUtil.closeResource(conn, pstmt);
 	}
 }
