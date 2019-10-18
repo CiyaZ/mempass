@@ -139,6 +139,7 @@ public class MainController {
 	 */
 	public void handleExitLoginButton() {
 		windowInitializr.STAGE_MAIN.hide();
+		LoginController.getInstance().clearTfAuthKey();
 		windowInitializr.STAGE_LOGIN.show();
 	}
 

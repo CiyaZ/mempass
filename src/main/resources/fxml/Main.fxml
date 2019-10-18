@@ -61,6 +61,7 @@
 						<Button fx:id="btnDeleteCategory" disable="true" mnemonicParsing="false" onAction="#handleDeleteCategoryButton" text="删除分类" />
 						<Button fx:id="btnDeleteAccount" disable="true" mnemonicParsing="false" onAction="#handleDeleteAccountButton" text="删除账户" />
 						<Button mnemonicParsing="false" onAction="#handleRandPasswordDialogButton" text="随机密码" />
+                  		<Button mnemonicParsing="false" onAction="#handleExitLoginButton" text="锁定" />
 					</items>
 				</ToolBar>
 			</children>
@@ -92,7 +93,7 @@
 					<top>
 						<HBox alignment="CENTER" prefHeight="23.0" prefWidth="200.0" BorderPane.alignment="CENTER">
 							<children>
-								<TextField fx:id="tfSearch" alignment="CENTER" prefHeight="23.0" prefWidth="108.0" onAction="#handleSearchButton" />
+								<TextField fx:id="tfSearch" alignment="CENTER" onAction="#handleSearchButton" prefHeight="23.0" prefWidth="108.0" />
 								<Button mnemonicParsing="false" onAction="#handleClearSearchButton" text="清空">
 									<HBox.margin>
 										<Insets left="3.0" />

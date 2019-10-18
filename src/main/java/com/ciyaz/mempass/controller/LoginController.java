@@ -11,6 +11,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
+/**
+ * 登录控制器
+ * 
+ * @author CiyaZ
+ */
 public class LoginController {
 
 	@FXML
@@ -21,11 +26,22 @@ public class LoginController {
 	private WindowInitializr windowInitializr = WindowInitializr.getInstance();
 	private AuthDao authDao = AuthDao.getInstance();
 
+	private static LoginController self = null;
+
+	public static LoginController getInstance() {
+		return LoginController.self;
+	}
+
 	@FXML
 	public void initialize() {
 		if (Config.LAST_AUTH_ID != null) {
 			tfAuthId.setText(Config.LAST_AUTH_ID);
 		}
+		LoginController.self = this;
+	}
+
+	public void clearTfAuthKey() {
+		pfAuthKey.clear();
 	}
 
 	public void handleLoginButton() {
