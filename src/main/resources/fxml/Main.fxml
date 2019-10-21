@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ciyaz.mempass.controller.MainController">
+<BorderPane prefHeight="480.0" prefWidth="640.0" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ciyaz.mempass.controller.MainController">
 	<top>
 		<VBox prefHeight="41.0" prefWidth="361.0" BorderPane.alignment="CENTER">
 			<children>
@@ -60,8 +60,8 @@
 						<Button fx:id="btnNewAccount" mnemonicParsing="false" onAction="#handleNewAccountButton" text="新建账户" />
 						<Button fx:id="btnDeleteCategory" disable="true" mnemonicParsing="false" onAction="#handleDeleteCategoryButton" text="删除分类" />
 						<Button fx:id="btnDeleteAccount" disable="true" mnemonicParsing="false" onAction="#handleDeleteAccountButton" text="删除账户" />
-						<Button mnemonicParsing="false" onAction="#handleRandPasswordDialogButton" text="随机密码" />
-                  		<Button mnemonicParsing="false" onAction="#handleExitLoginButton" text="锁定" />
+						<Button fx:id="btnRandomPassword" mnemonicParsing="false" onAction="#handleRandPasswordDialogButton" text="随机密码" />
+                  		<Button fx:id="btnExitLogin" mnemonicParsing="false" onAction="#handleExitLoginButton" text="锁定" />
 					</items>
 				</ToolBar>
 			</children>
