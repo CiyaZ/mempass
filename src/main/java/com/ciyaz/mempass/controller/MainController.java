@@ -437,6 +437,19 @@ public class MainController {
 		// 设置表格数据存储和展示逻辑
 		tcAccountInfoKey.setCellFactory(TextFieldTableCell.<TableViewBean>forTableColumn());
 		tcAccountInfoValue.setCellFactory(TextFieldTableCell.<TableViewBean>forTableColumn());
+		// 只有当密码行选中时才显示明文
+		// 由于我想要的效果和TableView默认的行为不太一致，所以这里代码看起来比较奇怪
+		// 具体我没细看，但我赌5毛JavaFX的表格渲染缓冲逻辑和数据绑定逻辑放一块有Bug
+		tvAccountInfo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (oldSelection != null && oldSelection.getExt1() != null) {
+				oldSelection.setValue(StringUtils.toPasswordShadow(oldSelection.getExt1()));
+				tvAccountInfo.refresh();
+			}
+			if (newSelection != null && newSelection.getExt1() != null) { 
+				newSelection.setValue(newSelection.getExt1());
+				tvAccountInfo.refresh();
+			}
+		});
 	}
 
 	/**
@@ -531,7 +544,9 @@ public class MainController {
 	public void loadTable(Account account) {
 		TableViewBean tvb1 = TableViewBean.builder().key("账户项").value(account.getItemName()).build();
 		TableViewBean tvb2 = TableViewBean.builder().key("账户名").value(account.getUsername()).build();
-		TableViewBean tvb3 = TableViewBean.builder().key("密码").value(account.getPassword()).build();
+		String password = account.getPassword();
+		String passwordDisplayShadow = StringUtils.toPasswordShadow(password);
+		TableViewBean tvb3 = TableViewBean.builder().key("密码").value(passwordDisplayShadow).ext1(password).build();
 		TableViewBean tvb4 = TableViewBean.builder().key("描述").value(account.getDescription()).build();
 		TableViewBean tvb5 = TableViewBean.builder().key("备注").value(account.getNote()).build();
 		Date createTime = account.getCreateTime();

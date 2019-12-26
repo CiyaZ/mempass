@@ -32,4 +32,18 @@ public class StringUtils {
 			return false;
 		}
 	}
+
+	/**
+	 * 将字符串转为密码圆点
+	 * 
+	 * @param srcStr 源字符串
+	 * @return 相同长度的密码圆点字符串
+	 */
+	public static String toPasswordShadow(String srcStr) {
+		StringBuilder passwordDisplayShadowBuilder = new StringBuilder();
+		for (int i = 0; i < srcStr.length(); i++) {
+			passwordDisplayShadowBuilder.append("●");
+		}
+		return passwordDisplayShadowBuilder.toString();
+	}
 }
