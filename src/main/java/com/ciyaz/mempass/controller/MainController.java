@@ -542,6 +542,14 @@ public class MainController {
 	 * @param account 账户信息对象
 	 */
 	public void loadTable(Account account) {
+		// 清除选中状态
+		tvAccountInfo.getSelectionModel().clearSelection();
+		// 清除编辑状态
+		// 貌似TableView没提供清除编辑状态的方法
+		// 但是突然发现tableView.edit()参数的注释文档中写道，如下传参数会清除选中状态
+		// 试了下居然好使，吃惊(⊙ˍ⊙)
+		tvAccountInfo.edit(-1, null);
+		// 加载数据
 		TableViewBean tvb1 = TableViewBean.builder().key("账户项").value(account.getItemName()).build();
 		TableViewBean tvb2 = TableViewBean.builder().key("账户名").value(account.getUsername()).build();
 		String password = account.getPassword();
