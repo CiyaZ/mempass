@@ -63,10 +63,10 @@ public class RandPasswordDialogController {
 
 	@FXML
 	private void initialize() {
-		cbCharSpace.getItems().add("仅数字");
-		cbCharSpace.getItems().add("数字和小写字母");
-		cbCharSpace.getItems().add("数字和字母");
 		cbCharSpace.getItems().add("数字字母和符号");
+		cbCharSpace.getItems().add("数字和字母");
+		cbCharSpace.getItems().add("数字和小写字母");
+		cbCharSpace.getItems().add("仅数字");
 		cbCharSpace.getSelectionModel().selectFirst();
 	}
 }
