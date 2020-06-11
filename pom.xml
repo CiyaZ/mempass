@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ciyaz.mempass</groupId>
 	<artifactId>mempass</artifactId>
-	<version>0.2.2-SNAPSHOT</version>
+	<version>0.2.3-SNAPSHOT</version>
 	<name>MemPass</name>
 	<description>Simple password manager</description>
 
