@@ -65,7 +65,9 @@ public class ChangePasswordDialogController {
 		}
 		// 修改密码
 		authDao.changePassword(password);
+		// 修改字段加密
 		accountDao.updateEncKey(oldPassword, password);
+		// 修改整库加密
 		DbUtil.changeFileEncPassword(password);
 		Config.AUTH_KEY = password;
 

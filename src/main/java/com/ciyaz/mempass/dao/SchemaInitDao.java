@@ -74,7 +74,7 @@ public class SchemaInitDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, stmt);
+			DbUtil.closeResource(stmt);
 		}
 	}
 
@@ -91,8 +91,7 @@ public class SchemaInitDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt);
+			DbUtil.closeResource(pstmt);
 		}
-
 	}
 }

@@ -48,8 +48,8 @@ public class AuthDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(null, pstmt1);
-			DbUtil.closeResource(conn, pstmt2);
+			DbUtil.closeResource(pstmt1);
+			DbUtil.closeResource(pstmt2);
 		}
 	}
 
@@ -90,8 +90,6 @@ public class AuthDao {
 			rs2.next();
 			String realAuthKey = rs2.getString("conf_value");
 
-			DbUtil.closeResource(conn);
-
 			if (authId.equals(realAuthId) && EncUtil.sha256Hex(authKey).equals(realAuthKey)) {
 				// 认证成功
 				return true;
@@ -103,8 +101,8 @@ public class AuthDao {
 			e.printStackTrace();
 			return false;
 		} finally {
-			DbUtil.closeResource(null, pstmt1, rs1);
-			DbUtil.closeResource(conn, pstmt2, rs2);
+			DbUtil.closeResource(pstmt1, rs1);
+			DbUtil.closeResource(pstmt2, rs2);
 		}
 	}
 
@@ -124,7 +122,7 @@ public class AuthDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt);
+			DbUtil.closeResource(pstmt);
 		}
 	}
 }

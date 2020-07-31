@@ -42,7 +42,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt);
+			DbUtil.closeResource(pstmt);
 		}
 	}
 
@@ -63,7 +63,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt);
+			DbUtil.closeResource(pstmt);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt, rs);
+			DbUtil.closeResource(pstmt, rs);
 		}
 		return result;
 	}
@@ -117,7 +117,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt, rs);
+			DbUtil.closeResource(pstmt, rs);
 		}
 		return resultList;
 	}
@@ -145,7 +145,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt, rs);
+			DbUtil.closeResource(pstmt, rs);
 		}
 		return category;
 	}
@@ -169,7 +169,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(null,  pstmt1);
+			DbUtil.closeResource(pstmt1);
 		}
 		// 删除分类
 		String sql2 = "delete from t_category where category_id=?";
@@ -181,7 +181,7 @@ public class CategoryDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
-			DbUtil.closeResource(conn, pstmt2);
+			DbUtil.closeResource(pstmt2);
 		}
 	}
 }

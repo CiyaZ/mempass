@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.ciyaz.mempass.util.DbUtil;
 import com.ciyaz.mempass.util.StringUtils;
 
 import com.ciyaz.mempass.WindowInitializr;
@@ -131,6 +132,7 @@ public class MainController {
 	 * 退出程序
 	 */
 	public void handleExitProgramButton() {
+		DbUtil.closeConnection();
 		Platform.exit();
 	}
 
@@ -138,6 +140,7 @@ public class MainController {
 	 * 退出登录
 	 */
 	public void handleExitLoginButton() {
+		DbUtil.closeConnection();
 		windowInitializr.STAGE_MAIN.hide();
 		LoginController.getInstance().clearTfAuthKey();
 		windowInitializr.STAGE_LOGIN.show();

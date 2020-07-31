@@ -15,6 +15,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
 public class DbUtil {
+	
+	/**
+	 * 数据库连接对象，该程序的DAO操作都是阻塞单线程的，所以这样复用连接没有问题
+	 */
+	private static Connection conn = null;
+	
 	static {
 		try {
 			Class.forName("org.h2.Driver");
@@ -29,7 +35,9 @@ public class DbUtil {
 	 * @return 连接对象
 	 */
 	public static Connection getConnection() {
-		Connection conn = null;
+		if (conn != null) {
+			return conn;
+		}
 		try {
 			String url = "jdbc:h2:" + Config.WORK_DIR + "/data/" + Config.AUTH_ID + "/mempass;TRACE_LEVEL_FILE=" + Config.H2_TRACE + ";CIPHER=AES;TRACE_LEVEL_SYSTEM_OUT=" + Config.H2_TRACE;
 			String user = "sa";
@@ -80,6 +88,9 @@ public class DbUtil {
 	 */
 	public static void changeFileEncPassword(String password) {
 		
+		// 断开连接
+		closeConnection();
+		
 		String dir = Config.WORK_DIR + "/data/" + Config.AUTH_ID;
 		String db = "mempass";
 		String cipher = "AES";
@@ -97,23 +108,9 @@ public class DbUtil {
 	/**
 	 * 关闭资源
 	 * 
-	 * @param connection 连接
-	 */
-	public static void closeResource(Connection connection) {
-		try {
-			connection.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 关闭资源
-	 * 
-	 * @param connection        连接
 	 * @param preparedStatement 预编译SQL
 	 */
-	public static void closeResource(Connection connection, PreparedStatement preparedStatement) {
+	public static void closeResource(PreparedStatement preparedStatement) {
 		if (preparedStatement != null) {
 			try {
 				preparedStatement.close();
@@ -121,22 +118,14 @@ public class DbUtil {
 				e.printStackTrace();
 			}
 		}
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**
 	 * 关闭资源
 	 * 
-	 * @param connection 连接
 	 * @param statement  SQL
 	 */
-	public static void closeResource(Connection connection, Statement statement) {
+	public static void closeResource(Statement statement) {
 		if (statement != null) {
 			try {
 				statement.close();
@@ -144,23 +133,15 @@ public class DbUtil {
 				e.printStackTrace();
 			}
 		}
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	/**
 	 * 关闭资源
 	 * 
-	 * @param connection        连接
 	 * @param preparedStatement 预编译SQL
 	 * @param resultSet         结果集
 	 */
-	public static void closeResource(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
+	public static void closeResource(PreparedStatement preparedStatement, ResultSet resultSet) {
 		if (preparedStatement != null) {
 			try {
 				preparedStatement.close();
@@ -168,13 +149,6 @@ public class DbUtil {
 				e.printStackTrace();
 			}
 		}
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
 		if (resultSet != null) {
 			try {
 				resultSet.close();
@@ -183,26 +157,15 @@ public class DbUtil {
 			}
 		}
 	}
-
-	/**
-	 * 关闭资源
-	 * 
-	 * @param connection 连接
-	 * @param resultSet  结果集
-	 */
-	public static void closeResource(Connection connection, ResultSet resultSet) {
-		if (connection != null) {
+	
+	public static void closeConnection() {
+		if (conn != null) {
 			try {
-				connection.close();
+				conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
-			}
-		}
-		if (resultSet != null) {
-			try {
-				resultSet.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			} finally {
+				conn = null;
 			}
 		}
 	}
