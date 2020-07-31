@@ -75,6 +75,7 @@ public class SchemaInitDao {
 			e.printStackTrace();
 		} finally {
 			DbUtil.closeResource(stmt);
+			DbUtil.closeConnection();
 		}
 	}
 
@@ -92,6 +93,7 @@ public class SchemaInitDao {
 			e.printStackTrace();
 		} finally {
 			DbUtil.closeResource(pstmt);
+			DbUtil.closeConnection();
 		}
 	}
 }

@@ -50,6 +50,7 @@ public class AuthDao {
 		} finally {
 			DbUtil.closeResource(pstmt1);
 			DbUtil.closeResource(pstmt2);
+			DbUtil.closeConnection();
 		}
 	}
 

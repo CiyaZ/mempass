@@ -1,5 +1,7 @@
 package com.ciyaz.mempass.controller;
 
+import java.io.File;
+
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AuthDao;
 import com.ciyaz.mempass.dao.SchemaInitDao;
@@ -44,6 +46,16 @@ public class AuthInitController {
 			return;
 		}
 
+		// 实例重复性校验
+		File checkDir = new File(Config.WORK_DIR + "/data/" + authId);
+		if (checkDir.exists()) {
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("警告");
+			alert.setContentText("同名实例已存在，不能重复创建！");
+			alert.show();
+			return;
+		}
+		
 		// 完成数据初始化
 		Config.AUTH_ID = authId;
 		Config.AUTH_KEY = authKey;

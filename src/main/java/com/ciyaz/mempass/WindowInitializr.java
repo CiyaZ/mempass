@@ -1,5 +1,7 @@
 package com.ciyaz.mempass;
 
+import com.ciyaz.mempass.util.DbUtil;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -82,6 +84,11 @@ public class WindowInitializr {
 		STAGE_MAIN.setTitle("Mempass账号管理系统");
 		STAGE_MAIN.setScene(mainScene);
 		STAGE_MAIN.getIcons().add(iconImage);
+		
+		// 主窗口关闭时尝试清理连接
+		STAGE_MAIN.setOnCloseRequest((ev) -> {
+			DbUtil.closeConnection();
+		});
 	}
 
 	/**
