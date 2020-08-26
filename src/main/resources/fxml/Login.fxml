@@ -27,8 +27,8 @@
          <children>
             <Label text="认证ID" />
             <Label text="加密秘钥" GridPane.rowIndex="1" />
-            <TextField fx:id="tfAuthId" GridPane.columnIndex="1" />
-            <PasswordField fx:id="pfAuthKey" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="tfAuthId" GridPane.columnIndex="1" onAction="#handleLoginButton" />
+            <PasswordField fx:id="pfAuthKey" GridPane.columnIndex="1" GridPane.rowIndex="1" onAction="#handleLoginButton" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <Button mnemonicParsing="false" onAction="#handleNewButton" text="新建" />
