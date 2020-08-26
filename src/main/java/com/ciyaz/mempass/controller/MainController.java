@@ -507,7 +507,12 @@ public class MainController {
 				// 在应用层根据匹配字符串过滤
 				Iterator<Account> it = accountList.iterator();
 				while (it.hasNext()) {
-					if (!StringUtils.containsIgnoreCase(it.next().getItemName(), searchPattern)) {
+					Account nextAccount = it.next();
+					if (!StringUtils.containsIgnoreCase(nextAccount.getItemName(), searchPattern) && 
+						!StringUtils.containsIgnoreCase(nextAccount.getUsername(), searchPattern) && 
+						!StringUtils.containsIgnoreCase(nextAccount.getDescription(), searchPattern) &&
+						!StringUtils.containsIgnoreCase(nextAccount.getNote(), searchPattern)
+							) {
 						it.remove();
 					}
 				}
