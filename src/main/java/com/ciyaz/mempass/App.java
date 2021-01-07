@@ -14,11 +14,15 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-	private WindowInitializr windowInitializr = WindowInitializr.getInstance();
-	private SchemaInitDao schemaInitDao = SchemaInitDao.getInstance();
+	private WindowInitializr windowInitializr;
+	private SchemaInitDao schemaInitDao;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+
+		SystemTrayInitializr.getInstance();
+		windowInitializr = WindowInitializr.getInstance();
+		schemaInitDao = SchemaInitDao.getInstance();
 
 		// 运行时配置初始化
 		PropertiesUtil.loadRuntimeProperties();
@@ -33,9 +37,11 @@ public class App extends Application {
 		if (checked) {
 			// 已初始化，显示登录
 			windowInitializr.STAGE_LOGIN.show();
+			SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_LOGIN);
 		} else {
 			// 未初始化，显示初始化窗口
 			windowInitializr.STAGE_AUTH_INIT.show();
+			SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_AUTH_INIT);
 		}
 
 	}

@@ -72,7 +72,6 @@ public class ChangePasswordDialogController {
 		Config.AUTH_KEY = password;
 
 		windowInitializr.STAGE_CHANGE_PASSWORD_DIALOG.hide();
-		windowInitializr.STAGE_MAIN.show();
 	}
 
 	/**
@@ -80,6 +79,5 @@ public class ChangePasswordDialogController {
 	 */
 	public void handleCancelButton() {
 		windowInitializr.STAGE_CHANGE_PASSWORD_DIALOG.hide();
-		windowInitializr.STAGE_MAIN.show();
 	}
 }

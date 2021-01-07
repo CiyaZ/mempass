@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.ciyaz.mempass.util.DbUtil;
 import com.ciyaz.mempass.util.StringUtils;
-
+import com.ciyaz.mempass.SystemTrayInitializr;
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AccountDao;
 import com.ciyaz.mempass.dao.CategoryDao;
@@ -144,6 +144,7 @@ public class MainController {
 		windowInitializr.STAGE_MAIN.hide();
 		LoginController.getInstance().clearTfAuthKey();
 		windowInitializr.STAGE_LOGIN.show();
+		SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_LOGIN);
 	}
 
 	/**

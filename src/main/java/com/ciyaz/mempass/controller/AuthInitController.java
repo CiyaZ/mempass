@@ -2,6 +2,7 @@ package com.ciyaz.mempass.controller;
 
 import java.io.File;
 
+import com.ciyaz.mempass.SystemTrayInitializr;
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AuthDao;
 import com.ciyaz.mempass.dao.SchemaInitDao;
@@ -66,5 +67,6 @@ public class AuthInitController {
 		// 隐藏初始化窗口，显示登录窗口
 		windowInitializr.STAGE_AUTH_INIT.hide();
 		windowInitializr.STAGE_LOGIN.show();
+		SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_LOGIN);
 	}
 }

@@ -84,11 +84,13 @@ public class WindowInitializr {
 		STAGE_MAIN.setTitle("Mempass账号管理系统");
 		STAGE_MAIN.setScene(mainScene);
 		STAGE_MAIN.getIcons().add(iconImage);
-		
-		// 主窗口关闭时尝试清理连接
-		STAGE_MAIN.setOnCloseRequest((ev) -> {
-			DbUtil.closeConnection();
-		});
+
+		if (!SystemTrayInitializr.getInstance().isSupportTray()) {
+			// 不支持系统托盘的操作系统，主窗口关闭时尝试清理连接准备退出程序
+			STAGE_MAIN.setOnCloseRequest((ev) -> {
+				DbUtil.closeConnection();
+			});
+		}
 	}
 
 	/**
@@ -129,8 +131,7 @@ public class WindowInitializr {
 	 * @throws Exception 异常
 	 */
 	public void initStageRandomPasswordDialog() throws Exception {
-		Parent randomPasswordDialogRoot = FXMLLoader
-				.load(this.getClass().getResource("/fxml/RandomPasswordDialog.fxml"));
+		Parent randomPasswordDialogRoot = FXMLLoader.load(this.getClass().getResource("/fxml/RandomPasswordDialog.fxml"));
 		Scene randomPasswordDialogScene = new Scene(randomPasswordDialogRoot);
 		STAGE_RANDOM_PASSWORD_DIALOG = new Stage();
 		STAGE_RANDOM_PASSWORD_DIALOG.initOwner(STAGE_MAIN);
@@ -146,8 +147,7 @@ public class WindowInitializr {
 	 * @throws Exception 异常
 	 */
 	public void initStageChangePasswordDialog() throws Exception {
-		Parent changePasswordDialogRoot = FXMLLoader
-				.load(this.getClass().getResource("/fxml/ChangePasswordDialog.fxml"));
+		Parent changePasswordDialogRoot = FXMLLoader.load(this.getClass().getResource("/fxml/ChangePasswordDialog.fxml"));
 		Scene changePasswordDialogScene = new Scene(changePasswordDialogRoot);
 		STAGE_CHANGE_PASSWORD_DIALOG = new Stage();
 		STAGE_CHANGE_PASSWORD_DIALOG.initOwner(STAGE_MAIN);

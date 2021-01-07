@@ -1,5 +1,6 @@
 package com.ciyaz.mempass.controller;
 
+import com.ciyaz.mempass.SystemTrayInitializr;
 import com.ciyaz.mempass.WindowInitializr;
 import com.ciyaz.mempass.dao.AuthDao;
 import com.ciyaz.mempass.util.Config;
@@ -69,6 +70,7 @@ public class LoginController {
 				PropertiesUtil.saveRuntimeProperties();
 				windowInitializr.initStageMain();
 				windowInitializr.STAGE_MAIN.show();
+				SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_MAIN);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -89,5 +91,6 @@ public class LoginController {
 	public void handleNewButton() {
 		windowInitializr.STAGE_LOGIN.hide();
 		windowInitializr.STAGE_AUTH_INIT.show();
+		SystemTrayInitializr.getInstance().setCurrentStage(windowInitializr.STAGE_AUTH_INIT);
 	}
 }
