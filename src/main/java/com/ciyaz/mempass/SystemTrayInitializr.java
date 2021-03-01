@@ -76,7 +76,9 @@ public class SystemTrayInitializr {
 			trayIcon.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					showCurrentStage();
+					if (e.getButton() == MouseEvent.BUTTON1) {
+						showCurrentStage();
+					}
 				}
 			});
 			systemTray.add(trayIcon);
