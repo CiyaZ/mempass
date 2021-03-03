@@ -3,3 +3,8 @@
 target
 .classpath
 .project
+
+# for gradle
+.gradle
+bin
+build
